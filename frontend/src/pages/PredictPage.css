@@ -1,0 +1,213 @@
+.predict-page {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #58a6ff, #1f6feb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header p {
+  color: #8b949e;
+  font-size: 16px;
+}
+
+.predict-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.predict-form-card {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions .btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Result Card */
+.result-card {
+  animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.result-card h2 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  color: #c9d1d9;
+}
+
+.result-main {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  background: #0d1117;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.result-icon {
+  font-size: 64px;
+  animation: bounce 0.6s ease-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.result-info {
+  flex: 1;
+}
+
+.result-info .badge {
+  font-size: 24px;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.result-confidence {
+  color: #8b949e;
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+/* Probabilities */
+.probabilities h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: #8b949e;
+}
+
+.prob-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.prob-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prob-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #c9d1d9;
+  font-weight: 500;
+}
+
+.prob-bar-container {
+  height: 8px;
+  background: #21262d;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prob-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease-out;
+}
+
+.prob-bar-low {
+  background: linear-gradient(90deg, #238636, #2ea043);
+}
+
+.prob-bar-medium {
+  background: linear-gradient(90deg, #9e6a03, #d29922);
+}
+
+.prob-bar-high {
+  background: linear-gradient(90deg, #da3633, #f85149);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .predict-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 28px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .result-main {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .result-icon {
+    font-size: 48px;
+  }
+}

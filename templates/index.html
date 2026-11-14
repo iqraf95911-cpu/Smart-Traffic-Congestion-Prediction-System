@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowSense AI - Smart Traffic Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #020617);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Outfit', sans-serif;
+            padding: 20px;
+        }
+
+        .glass {
+            width: 100%;
+            max-width: 480px;
+            padding: 40px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 0 80px rgba(59, 130, 246, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: block;
+            color: #c7d2fe;
+            font-weight: 500;
+        }
+
+        .input-hint {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            outline: none;
+            font-size: 14px;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid #38bdf8;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1e293b;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            font-size: 15px;
+            font-weight: bold;
+            color: #0f172a;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #result {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        #result.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-title {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .result-level {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-level.low {
+            color: #22c55e;
+        }
+
+        .result-level.medium {
+            color: #f59e0b;
+        }
+
+        .result-level.high {
+            color: #ef4444;
+        }
+
+        .confidence {
+            font-size: 13px;
+            color: #c7d2fe;
+            margin-bottom: 12px;
+        }
+
+        .probabilities {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .prob-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .prob-label {
+            color: #94a3b8;
+        }
+
+        .prob-value {
+            color: #c7d2fe;
+            font-weight: 600;
+        }
+
+        .error {
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        footer {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(15, 23, 42, 0.3);
+            border-top-color: #0f172a;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glass">
+        <h2>🚦 FlowSense AI</h2>
+        <p class="subtitle">Smart Traffic Congestion Prediction</p>
+
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="hour">Hour of Day</label>
+                <input id="hour" type="number" min="0" max="23" required>
+                <div class="input-hint">0-23 (24-hour format)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="day">Day of Week</label>
+                <select id="day" required>
+                    <option value="">Select day</option>
+                    <option value="0">Monday</option>
+                    <option value="1">Tuesday</option>
+                    <option value="2">Wednesday</option>
+                    <option value="3">Thursday</option>
+                    <option value="4">Friday</option>
+                    <option value="5">Saturday</option>
+                    <option value="6">Sunday</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="count">Vehicle Count</label>
+                <input id="count" type="number" min="0" max="500" required>
+                <div class="input-hint">Number of vehicles (0-500)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="road">Road Type</label>
+                <select id="road" required>
+                    <option value="">Select road type</option>
+                    <option value="0">City</option>
+                    <option value="1">Highway</option>
+                    <option value="2">Residential</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="weather">Weather Condition</label>
+                <select id="weather" required>
+                    <option value="">Select weather</option>
+                    <option value="0">Clear</option>
+                    <option value="1">Fog</option>
+                    <option value="2">Rain</option>
+                </select>
+            </div>
+
+            <button type="submit" id="predictBtn">Predict Traffic</button>
+            <div class="error" id="error"></div>
+        </form>
+
+        <div id="result">
+            <div class="result-title">Predicted Traffic Congestion</div>
+            <div class="result-level" id="trafficLevel"></div>
+            <div class="confidence" id="confidence"></div>
+            <div class="probabilities">
+                <div class="prob-item">
+                    <span class="prob-label">Low:</span>
+                    <span class="prob-value" id="probLow"></span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-label">Medium:</span>
+                    <span class="prob-value" id="probMedium"></span>
+                </div>
+                <div class="prob-item">
+                    <span class="prob-label">High:</span>
+                    <span class="prob-value" id="probHigh"></span>
+                </div>
+            </div>
+        </div>
+
+        <footer>AI-powered Traffic Intelligence </footer>
+    </div>
+
+    <script>
+        const form = document.getElementById('predictionForm');
+        const predictBtn = document.getElementById('predictBtn');
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Hide previous results and errors
+            resultDiv.classList.remove('show');
+            errorDiv.classList.remove('show');
+            
+            // Disable button and show loading
+            predictBtn.disabled = true;
+            const originalText = predictBtn.innerHTML;
+            predictBtn.innerHTML = 'Predicting<span class="loading"></span>';
+
+            try {
+                const features = [
+                    parseInt(document.getElementById('hour').value),
+                    parseInt(document.getElementById('day').value),
+                    parseInt(document.getElementById('count').value),
+                    parseInt(document.getElementById('road').value),
+                    parseInt(document.getElementById('weather').value)
+                ];
+
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ features })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Prediction failed');
+                }
+
+                // Display results
+                const levelElement = document.getElementById('trafficLevel');
+                
+                // Check if we have the expected data structure
+                if (!data.traffic_level || !data.confidence || !data.probabilities) {
+                    throw new Error('Invalid response format from server');
+                }
+                
+                levelElement.textContent = data.traffic_level;
+                levelElement.className = 'result-level ' + (data.traffic_level || '').toLowerCase();
+
+                document.getElementById('confidence').textContent = 
+                    `Confidence: ${data.confidence}%`;
+
+                document.getElementById('probLow').textContent = 
+                    (data.probabilities.Low || 0) + '%';
+                document.getElementById('probMedium').textContent = 
+                    (data.probabilities.Medium || 0) + '%';
+                document.getElementById('probHigh').textContent = 
+                    (data.probabilities.High || 0) + '%';
+
+                resultDiv.classList.add('show');
+
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.add('show');
+            } finally {
+                // Re-enable button
+                predictBtn.disabled = false;
+                predictBtn.innerHTML = originalText;
+            }
+        });
+
+        // Set default values for quick testing
+        document.getElementById('hour').value = 8;
+        document.getElementById('day').value = 1;
+        document.getElementById('count').value = 120;
+        document.getElementById('road').value = 1;
+        document.getElementById('weather').value = 0;
+    </script>
+</body>
+
+</html>
